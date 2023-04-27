@@ -86,10 +86,10 @@ namespace ariel
         if (inptstream.fail())
             throw std::runtime_error("Invalid input");
 
-        if (denitor == 0)
+        else if (denitor == 0)
             throw std::runtime_error("Denominator can't be zero");
 
-        if (denitor < 0)
+        else if (denitor < 0)
         {
             numitor *= -1;
             denitor *= -1;
@@ -142,53 +142,6 @@ namespace ariel
         return Fraction(numerator, denominator);
     }
 
-    const Fraction Fraction::operator+() const {
-        return Fraction(_numerator, _denominator);
-    }
-
-    const Fraction Fraction::operator-() const {
-        return Fraction(-_numerator, _denominator);
-    }
-
-    Fraction& operator+=(Fraction& fraction, const Fraction& other) {
-        fraction._numerator = (fraction._numerator * other._denominator) + (other._numerator * fraction._denominator);
-        fraction._denominator = other._denominator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
-    Fraction& operator-=(Fraction& fraction, const Fraction& other) {
-        fraction._numerator = (fraction._numerator * other._denominator) - (other._numerator * fraction._denominator);
-        fraction._denominator *= other._denominator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
-    Fraction& operator*=(Fraction& fraction, const Fraction& other) {
-        fraction._numerator *= other._numerator;
-        fraction._denominator *= other._denominator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
-    Fraction& operator/=(Fraction& fraction, const Fraction& other) {
-        if (other._numerator == 0)
-            throw invalid_argument("Can't divide by zero");
-
-        fraction._numerator *= other._denominator;
-        fraction._denominator *= other._numerator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
     Fraction& Fraction::operator++() {
         _numerator += _denominator;
 
@@ -218,7 +171,11 @@ namespace ariel
     }
 
     bool Fraction::operator==(const Fraction& other) const {
-        return (_numerator == other._numerator && _denominator == other._denominator);
+        const float epsilon = 1000.0;
+        int opt1 = (int)(((float)_numerator / (float)_denominator) * epsilon);
+        int opt2 = (int)(((float)other._numerator / (float)other._denominator) * epsilon);
+
+        return (opt1 == opt2);
     }
 
     bool Fraction::operator!=(const Fraction& other) const {
@@ -244,35 +201,35 @@ namespace ariel
 
     // Operators with floats
 
-    const Fraction operator+(const Fraction& curr, const float& number) {
-        return curr + Fraction(number);
+    const Fraction Fraction::operator+(const float& other) const {
+        return *this + Fraction(other);
     }
     
     const Fraction operator+(const float& num, const Fraction& other) {
         return Fraction(num) + other;
     }
 
-    const Fraction operator-(const Fraction& curr, const float& number)  {
-        return curr - Fraction(number);
+    const Fraction Fraction::operator-(const float& other) const  {
+        return *this - Fraction(other);
     }
 
     const Fraction operator-(const float& num, const Fraction& other) {
         return Fraction(num) - other;
     }
 
-    const Fraction operator*(const Fraction& curr, const float& number) {
-        return curr * Fraction(number);
+    const Fraction Fraction::operator*(const float& other) const {
+        return *this * Fraction(other);
     }
 
     const Fraction operator*(const float& num, const Fraction& other) {
         return Fraction(num) * other;
     }
 
-    const Fraction operator/(const Fraction& curr, const float& number)  {
-        if (number == 0)
+    const Fraction Fraction::operator/(const float& other) const  {
+        if (other == 0.0)
             throw runtime_error("Can't divide by zero");
 
-        return curr / Fraction(number);
+        return *this / Fraction(other);
     }
 
     const Fraction operator/(const float& num, const Fraction& other) {
@@ -282,95 +239,48 @@ namespace ariel
         return Fraction(num) / other;
     }
 
-    Fraction& operator+=(Fraction& fraction, const float& number) {
-        Fraction temp = fraction + Fraction(number);
-        
-        fraction._numerator = temp._numerator;
-        fraction._denominator = temp._denominator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
-    Fraction& operator-=(Fraction& fraction, const float& number) {
-        Fraction temp = fraction - Fraction(number);
-        
-        fraction._numerator = temp._numerator;
-        fraction._denominator = temp._denominator;
-
-        fraction._reduce();
-
-        return fraction;
-    }
-
-    Fraction& operator*=(Fraction& fraction, const float& number) {
-        Fraction temp = fraction * Fraction(number);
-        
-        fraction._numerator = temp._numerator;
-        fraction._denominator = temp._denominator;
-
-        fraction._reduce();
-        
-        return fraction;
-    }
-
-    Fraction& operator/=(Fraction& fraction, const float& number) {
-        if (number == 0)
-            throw runtime_error("Can't divide by zero");
-            
-        Fraction temp = fraction / Fraction(number);
-        
-        fraction._numerator = temp._numerator;
-        fraction._denominator = temp._denominator;
-
-        fraction._reduce();
-        
-        return fraction;
-    }
-
-    bool operator==(const Fraction& curr, const float& number) {
-        return curr == Fraction(number);
+    bool Fraction::operator==(const float& other) const {
+        return *this == Fraction(other);
     }
 
     bool operator==(const float& num, const Fraction& other) {
         return Fraction(num) == other;
     }
 
-    bool operator!=(const Fraction& curr, const float& number) {
-        return !(curr == Fraction(number));
+    bool Fraction::operator!=(const float& other) const {
+        return !(*this == Fraction(other));
     }
 
     bool operator!=(const float& num, const Fraction& other) {
         return !(Fraction(num) == other);
     }
 
-    bool operator<(const Fraction& curr, const float& number) {
-        return curr < Fraction(number);
+    bool Fraction::operator<(const float& other) const {
+        return *this < Fraction(other);
     }
 
     bool operator<(const float& num, const Fraction& other) {
         return Fraction(num) < other;
     }
 
-    bool operator>(const Fraction& curr, const float& number) {
-        return curr > Fraction(number);
+    bool Fraction::operator>(const float& other) const {
+        return *this > Fraction(other);
     }
 
     bool operator>(const float& num, const Fraction& other) {
         return Fraction(num) > other;
     }
 
-    bool operator<=(const Fraction& curr, const float& number) {
-        return !(curr > Fraction(number));
+    bool Fraction::operator<=(const float& other) const {
+        return !(*this > Fraction(other));
     }
 
     bool operator<=(const float& num, const Fraction& other) {
         return !(Fraction(num) > other);
     }
 
-    bool operator>=(const Fraction& curr, const float& number) {
-        return !(curr < Fraction(number));
+    bool Fraction::operator>=(const float& other) const {
+        return !(*this < Fraction(other));
     }
 
     bool operator>=(const float& num, const Fraction& other) {

@@ -57,9 +57,9 @@ namespace ariel
              * @note This function is private because it is only used internally.
             */
             void _reduce() {
-                auto gcd = _gcd(abs(_numerator), abs(_denominator));
-                _numerator /= gcd;
-                _denominator /= gcd;
+                auto gcd_fact = _gcd(abs(_numerator), abs(_denominator));
+                _numerator /= gcd_fact;
+                _denominator /= gcd_fact;
             }
 
             /*
@@ -70,7 +70,7 @@ namespace ariel
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
             static void _reduce(int& numerator, int& denominator) {
-                int gcd_fact = _gcd(abs(numerator), abs(denominator));
+                auto gcd_fact = _gcd(abs(numerator), abs(denominator));
                 numerator /= gcd_fact;
                 denominator /= gcd_fact;
             }
@@ -273,11 +273,10 @@ namespace ariel
 
             /*
              * @brief Adds a fraction to a float.
-             * @param curr The fraction to divide.
              * @param num The float to add.
              * @return  The result of the addition.
             */
-            friend const Fraction operator+(const Fraction& curr, const float& num);
+            const Fraction operator+(const float& num) const;
 
             /*
              * @brief Adds a fraction to a float.
@@ -296,11 +295,10 @@ namespace ariel
 
             /*
              * @brief Subtracts a fraction from a float.
-             * @param curr The fraction to divide.
              * @param num The float to subtract.
              * @return The result of the subtraction.
             */
-            friend const Fraction operator-(const Fraction& curr, const float& num);
+            const Fraction operator-(const float& num) const;
 
             /*
              * @brief Subtracts a fraction from a float.
@@ -322,7 +320,7 @@ namespace ariel
              * @param num The float to multiply.
              * @return The result of the multiplication.
             */
-            friend const Fraction operator*(const Fraction& curr, const float& num);
+            const Fraction operator*(const float& num) const;
 
             /*
              * @brief Multiplies a fraction by a float.
@@ -341,11 +339,10 @@ namespace ariel
 
             /*
              * @brief Divides a fraction by a float.
-             * @param curr The fraction to divide.
              * @param num The float to divide.
              * @return The result of the division.
             */
-            friend const Fraction operator/(const Fraction& curr, const float& num);
+            const Fraction operator/(const float& num) const;
 
             /*
              * @brief Divides a fraction by a float.
@@ -354,87 +351,6 @@ namespace ariel
              * @return The result of the division.
             */
             friend const Fraction operator/(const float& num, const Fraction& other);
-
-            /*
-             * @brief Returns the fraction.
-             * @return The fraction.
-            */
-            const Fraction operator+() const;
-
-            /*
-             * @brief Negates the fraction.
-             * @return The negated fraction.
-            */
-            const Fraction operator-() const;
-
-            
-            /**************************************************/
-            /* Operators overload zone - Assignment operators */
-            /**************************************************/
-
-            /*
-             * @brief Adds a fraction to the current fraction.
-             * @param fraction The current fraction.
-             * @param other The fraction to add.
-             * @return The current fraction.
-            */
-            friend Fraction& operator+=(Fraction& fraction, const Fraction& other);
-
-            /*
-             * @brief Adds a float to the current fraction.
-             * @param fraction The current fraction.
-             * @param num The float to add.
-             * @return The current fraction.
-            */
-            friend Fraction& operator+=(Fraction& fraction, const float& num);
-
-            /*
-             * @brief Subtracts a fraction from the current fraction.
-             * @param fraction The current fraction.
-             * @param other The fraction to subtract.
-             * @return The current fraction.
-            */
-            friend Fraction& operator-=(Fraction& fraction, const Fraction& other);
-
-            /* 
-             * @brief Adds a float to the current fraction.
-             * @param fraction The current fraction.
-             * @param num The float to add.
-             * @return The current fraction.
-            */
-            friend Fraction& operator-=(Fraction& fraction, const float& num);
-
-            /*
-             * @brief Multiplies the current fraction by a fraction.
-             * @param fraction The current fraction.
-             * @param other The fraction to multiply.
-             * @return The current fraction.
-            */
-            friend Fraction& operator*=(Fraction& fraction, const Fraction& other);
-
-            /*
-             * @brief Multiplies the current fraction by a float.
-             * @param fraction The current fraction.
-             * @param num The float to multiply.
-             * @return The current fraction.
-            */
-            friend Fraction& operator*=(Fraction& fraction, const float& num);
-
-            /*
-             * @brief Divides the current fraction by a fraction.
-             * @param fraction The current fraction.
-             * @param other The fraction to divide.
-             * @return The current fraction.
-            */
-            friend Fraction& operator/=(Fraction& fraction, const Fraction& other);
-
-            /*
-             * @brief Divides the current fraction by a float.
-             * @param fraction The current fraction.
-             * @param num The float to divide.
-             * @return The current fraction.
-            */
-            friend Fraction& operator/=(Fraction& fraction, const float& num);
 
             /*
              * @brief Increments the current fraction by 1 (pre-increment).
@@ -474,11 +390,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and an float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the fractions are equal, false otherwise.
             */
-            friend bool operator==(const Fraction& curr, const float& other);
+            bool operator==(const float& other) const;
 
             /*
              * @brief Compares a fraction and an float.
@@ -497,11 +412,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and an float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the fractions are not equal, false otherwise.
             */
-            friend bool operator!=(const Fraction& curr, const float& other);
+            bool operator!=(const float& other) const;
 
             /*
              * @brief Compares a fraction and an float.
@@ -520,11 +434,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is greater than the float, false otherwise.
             */
-            friend bool operator>(const Fraction& curr, const float& other);
+            bool operator>(const float& other) const;
 
             /*
              * @brief Compares a fraction and a float.
@@ -543,11 +456,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is less than the float, false otherwise.
             */
-            friend bool operator<(const Fraction& curr, const float& other);
+            bool operator<(const float& other) const;
 
             /*
              * @brief Compares a fraction and a float.
@@ -566,11 +478,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is greater than or equal to the float, false otherwise.
             */
-            friend bool operator>=(const Fraction& curr, const float& other);
+            bool operator>=(const float& other) const;
 
             /*
              * @brief Compares a fraction and a float.
@@ -589,11 +500,10 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
-             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is less than or equal to the float, false otherwise.
             */
-            friend bool operator<=(const Fraction& curr, const float& other);
+            bool operator<=(const float& other) const;
 
             /*
              * @brief Compares a fraction and a float.
