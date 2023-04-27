@@ -17,8 +17,6 @@
 
 #include "Fraction.hpp"
 
-using namespace std;
-
 namespace ariel
 {
     Fraction::Fraction(): _numerator(0), _denominator(1) {}
@@ -73,12 +71,12 @@ namespace ariel
 
     // Stream operators (IO friend functions)
 
-    ostream& operator<<(ostream& outstream, const Fraction& fraction) {
+    std::ostream& operator<<(std::ostream& outstream, const Fraction& fraction) {
         outstream << fraction._numerator << "/" << fraction._denominator;
         return outstream;
     }
 
-    istream& operator>>(istream& inptstream, Fraction& fraction) {
+    std::istream& operator>>(std::istream& inptstream, Fraction& fraction) {
         int numitor = 0, denitor = 0;
 
         inptstream >> numitor >> denitor;
@@ -134,7 +132,7 @@ namespace ariel
 
     const Fraction Fraction::operator/(const Fraction& other) const {
         if (other._numerator == 0)
-            throw runtime_error("Can't divide by zero");
+            throw std::runtime_error("Can't divide by zero");
 
         int numerator = _overflow_multiplication_check(_numerator, other._denominator);
         int denominator = _overflow_multiplication_check(_denominator, other._numerator);
@@ -227,14 +225,14 @@ namespace ariel
 
     const Fraction Fraction::operator/(const float& other) const  {
         if (other == 0.0)
-            throw runtime_error("Can't divide by zero");
+            throw std::runtime_error("Can't divide by zero");
 
         return *this / Fraction(other);
     }
 
     const Fraction operator/(const float& num, const Fraction& other) {
         if (other._numerator == 0)
-            throw runtime_error("Can't divide by zero");
+            throw std::runtime_error("Can't divide by zero");
 
         return Fraction(num) / other;
     }
