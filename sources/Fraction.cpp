@@ -23,11 +23,8 @@ namespace ariel
 {
     Fraction::Fraction(): _numerator(0), _denominator(1) {}
 
-    Fraction::Fraction(float number) {
-        _numerator = static_cast<int>(1000* number);
-        _denominator = 1000;
-
-        __reduce();
+    Fraction::Fraction(float number): _numerator(static_cast<int>(1000 * number)), _denominator(1000) {
+        _reduce();
     }
 
     Fraction::Fraction(int numerator, int denominator): _numerator(numerator), _denominator(denominator) {
@@ -40,7 +37,7 @@ namespace ariel
             _denominator *= -1;
         }
 
-        __reduce();
+        _reduce();
     }
 
     Fraction::Fraction(const Fraction& other): _numerator(other._numerator), _denominator(other._denominator) {}
@@ -76,17 +73,17 @@ namespace ariel
 
     // Stream operators (IO friend functions)
 
-    ostream& operator<<(ostream& os, const Fraction& fraction) {
-        os << fraction._numerator << "/" << fraction._denominator;
-        return os;
+    ostream& operator<<(ostream& outstream, const Fraction& fraction) {
+        outstream << fraction._numerator << "/" << fraction._denominator;
+        return outstream;
     }
 
-    istream& operator>>(istream& is, Fraction& fraction) {
+    istream& operator>>(istream& inptstream, Fraction& fraction) {
         int numitor = 0, denitor = 0;
 
-        is >> numitor >> denitor;
+        inptstream >> numitor >> denitor;
 
-        if (is.fail())
+        if (inptstream.fail())
             throw std::runtime_error("Invalid input");
 
         if (denitor == 0)
@@ -100,37 +97,37 @@ namespace ariel
 
         fraction._numerator = numitor;
         fraction._denominator = denitor;
-        fraction.__reduce();
+        fraction._reduce();
 
-        return is;
+        return inptstream;
 	}
 
 
     // Operators with fractions
 
     const Fraction Fraction::operator+(const Fraction& other) const {
-        int a = __overflow_multiplication_check(_numerator, other._denominator);
-        int b = __overflow_multiplication_check(other._numerator, _denominator);
+        int a = _overflow_multiplication_check(_numerator, other._denominator);
+        int b = _overflow_multiplication_check(other._numerator, _denominator);
         
-        int numerator = __overflow_addition_check(a, b);
-        int denominator = __overflow_multiplication_check(_denominator, other._denominator);
+        int numerator = _overflow_addition_check(a, b);
+        int denominator = _overflow_multiplication_check(_denominator, other._denominator);
 
         return Fraction(numerator, denominator);
     }
 
     const Fraction Fraction::operator-(const Fraction& other) const {
-        int a = __overflow_multiplication_check(_numerator, other._denominator);
-        int b = __overflow_multiplication_check(other._numerator, _denominator);
+        int a = _overflow_multiplication_check(_numerator, other._denominator);
+        int b = _overflow_multiplication_check(other._numerator, _denominator);
         
-        int numerator = __overflow_subtraction_check(a, b);
-        int denominator = __overflow_multiplication_check(_denominator, other._denominator);
+        int numerator = _overflow_subtraction_check(a, b);
+        int denominator = _overflow_multiplication_check(_denominator, other._denominator);
 
         return Fraction(numerator, denominator);
     }
 
     const Fraction Fraction::operator*(const Fraction& other) const {
-        int numerator = __overflow_multiplication_check(_numerator, other._numerator);
-        int denominator = __overflow_multiplication_check(_denominator, other._denominator);
+        int numerator = _overflow_multiplication_check(_numerator, other._numerator);
+        int denominator = _overflow_multiplication_check(_denominator, other._denominator);
 
         return Fraction(numerator, denominator);
     }
@@ -139,8 +136,8 @@ namespace ariel
         if (other._numerator == 0)
             throw runtime_error("Can't divide by zero");
 
-        int numerator = __overflow_multiplication_check(_numerator, other._denominator);
-        int denominator = __overflow_multiplication_check(_denominator, other._numerator);
+        int numerator = _overflow_multiplication_check(_numerator, other._denominator);
+        int denominator = _overflow_multiplication_check(_denominator, other._numerator);
 
         return Fraction(numerator, denominator);
     }
@@ -157,7 +154,7 @@ namespace ariel
         fraction._numerator = (fraction._numerator * other._denominator) + (other._numerator * fraction._denominator);
         fraction._denominator = other._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -166,7 +163,7 @@ namespace ariel
         fraction._numerator = (fraction._numerator * other._denominator) - (other._numerator * fraction._denominator);
         fraction._denominator *= other._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -175,7 +172,7 @@ namespace ariel
         fraction._numerator *= other._numerator;
         fraction._denominator *= other._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -187,7 +184,7 @@ namespace ariel
         fraction._numerator *= other._denominator;
         fraction._denominator *= other._numerator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -195,7 +192,7 @@ namespace ariel
     Fraction& Fraction::operator++() {
         _numerator += _denominator;
 
-        __reduce();
+        _reduce();
 
         return *this;
     }
@@ -209,7 +206,7 @@ namespace ariel
     Fraction& Fraction::operator--() {
         _numerator -= _denominator;
 
-        __reduce();
+        _reduce();
 
         return *this;
     }
@@ -291,7 +288,7 @@ namespace ariel
         fraction._numerator = temp._numerator;
         fraction._denominator = temp._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -302,7 +299,7 @@ namespace ariel
         fraction._numerator = temp._numerator;
         fraction._denominator = temp._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
 
         return fraction;
     }
@@ -313,7 +310,7 @@ namespace ariel
         fraction._numerator = temp._numerator;
         fraction._denominator = temp._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
         
         return fraction;
     }
@@ -327,7 +324,7 @@ namespace ariel
         fraction._numerator = temp._numerator;
         fraction._denominator = temp._denominator;
 
-        fraction.__reduce();
+        fraction._reduce();
         
         return fraction;
     }

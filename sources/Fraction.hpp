@@ -56,8 +56,8 @@ namespace ariel
              * @brief Reduces the fraction to its simplest form.
              * @note This function is private because it is only used internally.
             */
-            void __reduce() {
-                auto gcd = __gcd(abs(_numerator), abs(_denominator));
+            void _reduce() {
+                auto gcd = _gcd(abs(_numerator), abs(_denominator));
                 _numerator /= gcd;
                 _denominator /= gcd;
             }
@@ -69,22 +69,22 @@ namespace ariel
              * @note This function is private because it is only used internally.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static void __reduce(int& numerator, int& denominator) {
-                int gcd_fact = __gcd(abs(numerator), abs(denominator));
+            static void _reduce(int& numerator, int& denominator) {
+                int gcd_fact = _gcd(abs(numerator), abs(denominator));
                 numerator /= gcd_fact;
                 denominator /= gcd_fact;
             }
 
             /*
              * @brief Calculates the greatest common divisor of two numbers.
-             * @param a The first number.
-             * @param b The second number.
+             * @param num1 The first number.
+             * @param num2 The second number.
              * @return int The greatest common divisor of the two numbers.
              * @note This function is used to reduce the fraction to its simplest form.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static int __gcd(int a, int b) {
-                return (b == 0) ? a:__gcd(b, a % b);
+            static int _gcd(int num1, int num2) {
+                return (num2 == 0) ? num1:_gcd(num2, num1 % num2);
             }
 
             /*
@@ -95,9 +95,11 @@ namespace ariel
              * @throw overflow_error if the addition will cause an overflow.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static int __overflow_addition_check(int num1, int num2) {
+            static int _overflow_addition_check(int num1, int num2) {
                 if ((num2 > 0 && num1 > (max_int - num2)) || (num2 < 0 && num1 < (min_int - num2)))
+                {
                     throw std::overflow_error("Addition overflow");
+                }
 
                 return (num1 + num2);
             }
@@ -110,9 +112,11 @@ namespace ariel
              * @throw overflow_error if the subtraction will cause an overflow.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static int __overflow_subtraction_check(int num1, int num2) {
+            static int _overflow_subtraction_check(int num1, int num2) {
                 if ((num2 < 0 && num1 > max_int + num2) || (num2 > 0 && num1 < min_int + num2))
+                {
                     throw std::overflow_error("Subtraction overflow");
+                }
 
                 return (num1 - num2);
             }
@@ -125,9 +129,11 @@ namespace ariel
              * @throw overflow_error if the multiplication will cause an overflow.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static int __overflow_multiplication_check(int num1, int num2) {
+            static int _overflow_multiplication_check(int num1, int num2) {
                 if ((num2 > 0 && num1 > max_int / num2) || (num2 < 0 && num1 < max_int / num2))
+                {
                     throw std::overflow_error("Multiplication overflow");
+                }
 
                 return (num1 * num2);
             }
@@ -140,9 +146,11 @@ namespace ariel
              * @throw overflow_error if the division will cause an overflow.
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
-            static int __overflow_division_check(int num1, int num2) {
+            static int _overflow_division_check(int num1, int num2) {
                 if (num2 == 0 || (num1 == min_int && num2 == -1))
+                {
                     throw std::overflow_error("Division overflow");
+                }
 
                 return (num1 / num2);
             }
@@ -241,7 +249,7 @@ namespace ariel
              * @param fraction The fraction to print.
              * @return The output stream.
             */
-            friend std::ostream& operator<<(std::ostream& os, const Fraction& fraction);
+            friend std::ostream& operator<<(std::ostream& outstream, const Fraction& fraction);
 
             /*
              * @brief Reads the fraction from the input stream.
@@ -249,7 +257,7 @@ namespace ariel
              * @param fraction The fraction to read.
              * @return The input stream.
             */
-            friend std::istream& operator>>(std::istream& is, Fraction& fraction);
+            friend std::istream& operator>>(std::istream& inptstream, Fraction& fraction);
 
 
             /**************************************************/
