@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <limits>
 
 namespace ariel
 {
@@ -40,11 +41,23 @@ namespace ariel
             int _denominator;
 
             /*
+             * @brief A constant that represents the maximum value of an int.
+             * @note This constant is used to check for overflow.
+            */
+            static const int max_int = std::numeric_limits<int>::max();
+
+            /*
+             * @brief A constant that represents the minimum value of an int.
+             * @note This constant is used to check for overflow.
+            */
+            static const int min_int = std::numeric_limits<int>::min();
+
+            /*
              * @brief Reduces the fraction to its simplest form.
              * @note This function is private because it is only used internally.
             */
             void __reduce() {
-                int gcd = __gcd(abs(_numerator), abs(_denominator));
+                auto gcd = __gcd(abs(_numerator), abs(_denominator));
                 _numerator /= gcd;
                 _denominator /= gcd;
             }
@@ -57,9 +70,9 @@ namespace ariel
              * @note This function is static because it is only used internally and doesn't require an instance of the class.
             */
             static void __reduce(int& numerator, int& denominator) {
-                int gcd = __gcd(abs(numerator), abs(denominator));
-                numerator /= gcd;
-                denominator /= gcd;
+                int gcd_fact = __gcd(abs(numerator), abs(denominator));
+                numerator /= gcd_fact;
+                denominator /= gcd_fact;
             }
 
             /*
@@ -72,6 +85,66 @@ namespace ariel
             */
             static int __gcd(int a, int b) {
                 return (b == 0) ? a:__gcd(b, a % b);
+            }
+
+            /*
+             * @brief Checks if the addition of two numbers will cause an overflow.
+             * @param num1 The first number.
+             * @param num2 The second number.
+             * @return The result of the addition.
+             * @throw overflow_error if the addition will cause an overflow.
+             * @note This function is static because it is only used internally and doesn't require an instance of the class.
+            */
+            static int __overflow_addition_check(int num1, int num2) {
+                if ((num2 > 0 && num1 > (max_int - num2)) || (num2 < 0 && num1 < (min_int - num2)))
+                    throw std::overflow_error("Addition overflow");
+
+                return (num1 + num2);
+            }
+
+            /*
+             * @brief Checks if the subtraction of two numbers will cause an overflow.
+             * @param num1 The first number.
+             * @param num2 The second number.
+             * @return The result of the subtraction.
+             * @throw overflow_error if the subtraction will cause an overflow.
+             * @note This function is static because it is only used internally and doesn't require an instance of the class.
+            */
+            static int __overflow_subtraction_check(int num1, int num2) {
+                if ((num2 < 0 && num1 > max_int + num2) || (num2 > 0 && num1 < min_int + num2))
+                    throw std::overflow_error("Subtraction overflow");
+
+                return (num1 - num2);
+            }
+
+            /*
+             * @brief Checks if the multiplication of two numbers will cause an overflow.
+             * @param num1 The first number.
+             * @param num2 The second number.
+             * @return The result of the multiplication.
+             * @throw overflow_error if the multiplication will cause an overflow.
+             * @note This function is static because it is only used internally and doesn't require an instance of the class.
+            */
+            static int __overflow_multiplication_check(int num1, int num2) {
+                if ((num2 > 0 && num1 > max_int / num2) || (num2 < 0 && num1 < max_int / num2))
+                    throw std::overflow_error("Multiplication overflow");
+
+                return (num1 * num2);
+            }
+
+            /*
+             * @brief Checks if the division of two numbers will cause an overflow.
+             * @param num1 The first number.
+             * @param num2 The second number.
+             * @return The result of the division.
+             * @throw overflow_error if the division will cause an overflow.
+             * @note This function is static because it is only used internally and doesn't require an instance of the class.
+            */
+            static int __overflow_division_check(int num1, int num2) {
+                if (num2 == 0 || (num1 == min_int && num2 == -1))
+                    throw std::overflow_error("Division overflow");
+
+                return (num1 / num2);
             }
 
         public:
@@ -119,6 +192,23 @@ namespace ariel
              * @note This destructor is default because it doesn't do anything.
             */
             ~Fraction() = default;
+
+
+            /************************************************************************/
+            /* Getters zone (literally unnecessary, but required by the assignment) */
+            /************************************************************************/
+
+            /*
+             * @brief Gets the numerator of the fraction.
+             * @return int The numerator of the fraction.
+            */
+            int getNumerator() const;
+
+            /*
+             * @brief Gets the denominator of the fraction.
+             * @return int The denominator of the fraction.
+            */
+            int getDenominator() const;
 
 
             /**************************************************/
@@ -175,10 +265,11 @@ namespace ariel
 
             /*
              * @brief Adds a fraction to a float.
+             * @param curr The fraction to divide.
              * @param num The float to add.
              * @return  The result of the addition.
             */
-            const Fraction operator+(const float& num) const;
+            friend const Fraction operator+(const Fraction& curr, const float& num);
 
             /*
              * @brief Adds a fraction to a float.
@@ -197,10 +288,11 @@ namespace ariel
 
             /*
              * @brief Subtracts a fraction from a float.
+             * @param curr The fraction to divide.
              * @param num The float to subtract.
              * @return The result of the subtraction.
             */
-            const Fraction operator-(const float& num) const;
+            friend const Fraction operator-(const Fraction& curr, const float& num);
 
             /*
              * @brief Subtracts a fraction from a float.
@@ -222,7 +314,7 @@ namespace ariel
              * @param num The float to multiply.
              * @return The result of the multiplication.
             */
-            const Fraction operator*(const float& num) const;
+            friend const Fraction operator*(const Fraction& curr, const float& num);
 
             /*
              * @brief Multiplies a fraction by a float.
@@ -241,10 +333,11 @@ namespace ariel
 
             /*
              * @brief Divides a fraction by a float.
+             * @param curr The fraction to divide.
              * @param num The float to divide.
              * @return The result of the division.
             */
-            const Fraction operator/(const float& num) const;
+            friend const Fraction operator/(const Fraction& curr, const float& num);
 
             /*
              * @brief Divides a fraction by a float.
@@ -373,10 +466,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and an float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the fractions are equal, false otherwise.
             */
-            bool operator==(const float& other) const;
+            friend bool operator==(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and an float.
@@ -395,10 +489,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and an float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the fractions are not equal, false otherwise.
             */
-            bool operator!=(const float& other) const;
+            friend bool operator!=(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and an float.
@@ -417,10 +512,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is greater than the float, false otherwise.
             */
-            bool operator>(const float& other) const;
+            friend bool operator>(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and a float.
@@ -439,10 +535,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is less than the float, false otherwise.
             */
-            bool operator<(const float& other) const;
+            friend bool operator<(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and a float.
@@ -461,10 +558,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is greater than or equal to the float, false otherwise.
             */
-            bool operator>=(const float& other) const;
+            friend bool operator>=(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and a float.
@@ -483,10 +581,11 @@ namespace ariel
 
             /*
              * @brief Compares a fraction and a float.
+             * @param curr The fraction to compare.
              * @param other The float to compare.
              * @return True if the current fraction is less than or equal to the float, false otherwise.
             */
-            bool operator<=(const float& other) const;
+            friend bool operator<=(const Fraction& curr, const float& other);
 
             /*
              * @brief Compares a fraction and a float.
