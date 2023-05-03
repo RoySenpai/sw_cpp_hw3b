@@ -169,11 +169,7 @@ namespace ariel
     }
 
     bool Fraction::operator==(const Fraction& other) const {
-        const float epsilon = 1000.0;
-        int opt1 = (int)(((float)_numerator / (float)_denominator) * epsilon);
-        int opt2 = (int)(((float)other._numerator / (float)other._denominator) * epsilon);
-
-        return (opt1 == opt2);
+        return (_numerator == other._numerator) && (_denominator == other._denominator);
     }
 
     bool Fraction::operator!=(const Fraction& other) const {
